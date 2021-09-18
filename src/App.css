@@ -1,0 +1,15 @@
+.caseBoxWrapper{
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+    align-content: center ;
+    text-align: center;
+    flex:0.8;
+
+}
+
+.caseBoxWrapper div{
+    border:1px solid black;
+    border-radius:5px;
+    flex-basis: 300px;
+}
