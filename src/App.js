@@ -1,6 +1,7 @@
 import "./App.css";
 import { useState, useEffect } from "react";
 import CasesBox from "./components/CasesBox";
+import Footer from "./components/Footer";
 import Table from "./components/Table";
 import {sortData} from "./utils";
 
@@ -108,13 +109,27 @@ function App() {
             const [worldWideData] = sortedCountriesData.filter((countryObj) => {
                 return countryObj.country === "All";
             });
-            // console.log(worldWideData);
+            console.log(worldWideData);
             setCountryData(worldWideData);
             // console.log("worldwide");
             // console.log(countriesList);
         };
         getAllCountries();
-    }, []);
+    },[]);
+
+    const handleSearch = async function(e){
+        const searchTerm = await e.target.value;
+        const filteredList = await countriesData.filter(country=>{
+            if(searchTerm==="") return true
+            else country.country.toLowerCase().includes(searchTerm.toLowerCase())
+        })
+        console.log(filteredList)
+        setCountriesData(filteredList)
+    }
+    const handleSort = function(e){
+        const sortedList = sortData(countriesData,e.target.value)
+        setCountriesData(sortedList);
+    }
 
     const handleChangedCountry = async function (e) {
         const getCountry = e.target.value;
@@ -130,8 +145,8 @@ function App() {
     return (
         <div className="App">
             {/* {console.log("worldwide", worldWide)} */}
-            <h1>Viviano Di Vinci</h1>
-            <select onChange={handleChangedCountry}>
+            <h1>Covid-19 Tracker </h1>
+            <select className="selectBox" onChange={handleChangedCountry}>
                 <option key={"Worldwide"} value={"Worldwide"}>
                     {"Worldwide"}
                 </option>
@@ -146,33 +161,36 @@ function App() {
             <div className="caseBoxWrapper">
                 {/* {console.log(countryData)} */}
                 <CasesBox
+
                     name="Active"
                     size={countryData.cases.active}
-                    total="1662"
+                    total={"+"+countryData.cases.new}
                 />
                 <CasesBox
                     name="Recovered"
                     size={countryData.cases.recovered}
-                    total="1662"
+                    total=""
                 />
                 <CasesBox
                     name="Deaths"
                     size={countryData.deaths.total}
-                    total="1692"
+                    total={countryData.deaths.new}
                 />
             </div>
             <div className="tableData">
-                <h1>Country Wise Data</h1>
+                <h1 className="countryWiseHeading">Country Wise Data</h1>
+                <p className="smallPara">**click on the buttons to sort the data respectively</p>
+                {/* <input onChange={handleSearch} className="searchbox" placeholder="Search Country Here"/> */}
 
                 <tr>
-                    <td>Serial No:</td>
-                    <td>Country Name</td>
-                    <td>New Cases</td>
+                    <td className="serialColumn"><button onClick={handleSort}>Serial No:</button></td>
+                    <td><button onClick={handleSort} value="country">Country Name</button></td>
+                    <td><button onClick={handleSort} value="new">New Cases</button></td>
                    
 
-                    <td>Active Cases</td>
-                    <td>Recovered Cases</td>
-                    <td>Total Deaths</td>
+                    <td><button onClick={handleSort} value="active">Active Cases</button></td>
+                    <td><button onClick={handleSort} value="recovered">Recovered Cases</button></td>
+                    <td><button onClick={handleSort} value="deaths">Total Deaths</button></td>
                 </tr>
 
                 {countriesData.map((country, index) => {
@@ -188,6 +206,7 @@ function App() {
                     );
                 })}
             </div>
+            <Footer/>
         </div>
     );
 }
