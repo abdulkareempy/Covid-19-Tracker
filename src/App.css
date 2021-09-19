@@ -13,3 +13,33 @@
     border-radius:5px;
     flex-basis: 300px;
 }
+
+.tableData{
+    height:400px;
+    overflow:auto;
+    width:80vw;
+    margin:20px auto;
+    text-align: center;
+}
+.tableData table{
+    width:100%;
+    box-sizing:border-box
+}
+
+.tableData table tr{
+    display:flex;
+    justify-content: space-between;
+    align-content: center;
+}
+.tableData table tr td{
+    flex-basis: 15%;
+}
+
+.tableData table tr:nth-of-type(even){
+    background-color:burlywood
+}
+
+.tableData table tr:nth-child(1){
+   
+    background-color: cornflowerblue;
+}
