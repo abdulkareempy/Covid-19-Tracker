@@ -45,6 +45,35 @@ function App() {
     });
 
     useEffect(() => {
+        const fetchWorldWide = async () => {
+            const getWorldData = await fetch(
+                "https://disease.sh/v3/covid-19/all"
+            )
+                .then((response) => response.json())
+                .catch((err) => {
+                    console.log("Oh No Error during fetch worldWide");
+                    console.log(err);
+                });
+
+            const editedData = {
+                cases: {
+                    active: getWorldData.active,
+                    recovered: getWorldData.recovered,
+                },
+                deaths: {
+                    total: getWorldData.deaths,
+                },
+            };
+
+            setCountryData(editedData);
+            setWorldWide(editedData);
+            // console.table(getWorldWide)
+            return getWorldData;
+        };
+        fetchWorldWide();
+    }, []);
+
+    useEffect(() => {
         const getAllCountries = async () => {
             const countriesList = await fetch(
                 "https://covid-193.p.rapidapi.com/statistics",
@@ -66,9 +95,9 @@ function App() {
                     console.error(err);
                 });
             setCountriesData(countriesList);
-            setCountryData(countriesList[0]);
+            // setCountryData(countriesList[0]);
             // console.log("worldwide");
-            console.log(handleWorlWide(countriesList));
+            // console.log(handleWorlWide(countriesList));
             // console.log(countriesList);
         };
         getAllCountries();
@@ -76,12 +105,14 @@ function App() {
 
     const handleChangedCountry = async function (e) {
         const getCountry = e.target.value;
-        // console.log("changed triggered",getCountry);
-        const [myCountry] = countriesData.filter((countryObj) => {
-            return countryObj.country === getCountry;
-        });
-        setCountryData(myCountry);
-        // console.log(myCountry[0]);
+        if (getCountry === "Worldwide") {
+            setCountryData(worldWide);
+        } else {
+            const [myCountry] = countriesData.filter((countryObj) => {
+                return countryObj.country === getCountry;
+            });
+            setCountryData(myCountry);
+        }
     };
     return (
         <div className="App">
