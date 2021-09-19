@@ -1,26 +1,27 @@
 import "./App.css";
-import react, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import CasesBox from "./components/CasesBox";
 import Table from "./components/Table";
+import {sortData} from "./utils";
 
-function handleWorlWide(countriesList) {
-    let totalActive = 0;
-    let totalRecovered = 0;
-    let totalDeaths = 0;
-    for (let country of countriesList) {
-        if (country.cases.active > 0) {
-            totalActive += country.cases.active;
-        }
-        if (country.cases.recovered > 0) {
-            totalRecovered += country.cases.recovered;
-        }
-        if (country.deaths.total > 0) {
-            totalDeaths += country.deaths.total;
-        }
-    }
-    console.log(totalActive + totalRecovered + totalDeaths);
-    return { totalActive, totalRecovered, totalDeaths };
-}
+// function handleWorlWide(countriesList) {
+//     let totalActive = 0;
+//     let totalRecovered = 0;
+//     let totalDeaths = 0;
+//     for (let country of countriesList) {
+//         if (country.cases.active > 0) {
+//             totalActive += country.cases.active;
+//         }
+//         if (country.cases.recovered > 0) {
+//             totalRecovered += country.cases.recovered;
+//         }
+//         if (country.deaths.total > 0) {
+//             totalDeaths += country.deaths.total;
+//         }
+//     }
+//     console.log(totalActive + totalRecovered + totalDeaths);
+//     return { totalActive, totalRecovered, totalDeaths };
+// }
 
 function App() {
     const [countriesData, setCountriesData] = useState([]);
@@ -44,34 +45,34 @@ function App() {
         },
     });
 
-    useEffect(() => {
-        const fetchWorldWide = async () => {
-            const getWorldData = await fetch(
-                "https://disease.sh/v3/covid-19/all"
-            )
-                .then((response) => response.json())
-                .catch((err) => {
-                    console.log("Oh No Error during fetch worldWide");
-                    console.log(err);
-                });
+    // useEffect(() => {
+    //     const fetchWorldWide = async () => {
+    //         const getWorldData = await fetch(
+    //             "https://disease.sh/v3/covid-19/all"
+    //         )
+    //             .then((response) => response.json())
+    //             .catch((err) => {
+    //                 console.log("Oh No Error during fetch worldWide");
+    //                 console.log(err);
+    //             });
 
-            const editedData = {
-                cases: {
-                    active: getWorldData.active,
-                    recovered: getWorldData.recovered,
-                },
-                deaths: {
-                    total: getWorldData.deaths,
-                },
-            };
+    //         const editedData = {
+    //             cases: {
+    //                 active: getWorldData.active,
+    //                 recovered: getWorldData.recovered,
+    //             },
+    //             deaths: {
+    //                 total: getWorldData.deaths,
+    //             },
+    //         };
 
-            setCountryData(editedData);
-            setWorldWide(editedData);
-            // console.table(getWorldWide)
-            return getWorldData;
-        };
-        fetchWorldWide();
-    }, []);
+    //         setCountryData(editedData);
+    //         setWorldWide(editedData);
+    //         // console.table(getWorldWide)
+    //         return getWorldData;
+    //     };
+    //     fetchWorldWide();
+    // }, []);
 
     useEffect(() => {
         const getAllCountries = async () => {
@@ -94,10 +95,22 @@ function App() {
                     console.log("error oh no error");
                     console.error(err);
                 });
-            setCountriesData(countriesList);
-            // setCountryData(countriesList[0]);
+            for(let country of countriesList){
+                if(country.cases.new == null){
+                    country.cases.new = "+0";
+                }
+                country.cases.new = parseInt(country.cases.new.slice(1))
+            }
+
+            const sortedCountriesData = sortData(countriesList);
+            // console.log(countriesList[0]);
+            setCountriesData(sortedCountriesData);
+            const [worldWideData] = sortedCountriesData.filter((countryObj) => {
+                return countryObj.country === "All";
+            });
+            // console.log(worldWideData);
+            setCountryData(worldWideData);
             // console.log("worldwide");
-            // console.log(handleWorlWide(countriesList));
             // console.log(countriesList);
         };
         getAllCountries();
@@ -154,6 +167,9 @@ function App() {
                 <tr>
                     <td>Serial No:</td>
                     <td>Country Name</td>
+                    <td>New Cases</td>
+                   
+
                     <td>Active Cases</td>
                     <td>Recovered Cases</td>
                     <td>Total Deaths</td>
@@ -164,6 +180,7 @@ function App() {
                         <Table
                             SNo={index + 1}
                             country={country.country}
+                            newCases={country.cases.new != null ? country.cases.new : "+0"}
                             active={country.cases.active}
                             recovered={country.cases.recovered}
                             deaths={country.deaths.total}
