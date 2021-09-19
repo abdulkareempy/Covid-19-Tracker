@@ -118,28 +118,27 @@ function App() {
                 />
             </div>
             <div className="tableData">
-                <table>
-                    <thead>
-                        <td>Serial No:</td>
-                        <td>Country Name</td>
-                        <td>Active Cases</td>
-                        <td>Recovered Cases</td>
-                        <td>Total Deaths</td>
-                    </thead>
-                    <tbody>
-                        {countriesData.map((country, index) => {
-                            return (
-                                <Table
-                                    SNo={index + 1}
-                                    country={country.country}
-                                    active={country.cases.active}
-                                    recovered={country.cases.recovered}
-                                    deaths={country.deaths.total}
-                                />
-                            );
-                        })}
-                    </tbody>
-                </table>
+                <h1>Country Wise Data</h1>
+
+                <tr>
+                    <td>Serial No:</td>
+                    <td>Country Name</td>
+                    <td>Active Cases</td>
+                    <td>Recovered Cases</td>
+                    <td>Total Deaths</td>
+                </tr>
+
+                {countriesData.map((country, index) => {
+                    return (
+                        <Table
+                            SNo={index + 1}
+                            country={country.country}
+                            active={country.cases.active}
+                            recovered={country.cases.recovered}
+                            deaths={country.deaths.total}
+                        />
+                    );
+                })}
             </div>
         </div>
     );
