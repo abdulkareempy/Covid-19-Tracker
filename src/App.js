@@ -117,15 +117,15 @@ function App() {
         getAllCountries();
     },[]);
 
-    const handleSearch = async function(e){
-        const searchTerm = await e.target.value;
-        const filteredList = await countriesData.filter(country=>{
-            if(searchTerm==="") return true
-            else country.country.toLowerCase().includes(searchTerm.toLowerCase())
-        })
-        console.log(filteredList)
-        setCountriesData(filteredList)
-    }
+    // const handleSearch = async function(e){
+    //     const searchTerm = await e.target.value;
+    //     const filteredList = await countriesData.filter(country=>{
+    //         if(searchTerm==="") return true
+    //         else country.country.toLowerCase().includes(searchTerm.toLowerCase())
+    //     })
+    //     console.log(filteredList)
+    //     setCountriesData(filteredList)
+    // }
     const handleSort = function(e){
         const sortedList = sortData(countriesData,e.target.value)
         setCountriesData(sortedList);
